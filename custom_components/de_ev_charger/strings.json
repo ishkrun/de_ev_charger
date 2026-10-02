@@ -18,5 +18,25 @@
     "abort": {
       "already_configured": "Device already configured"
     }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Status",
+        "state": {
+          "scheduled": "Waiting for schedule",
+          "charging": "Charging",
+          "other": "Other"
+        }
+      },
+      "vehicle": {
+        "name": "Vehicle",
+        "state": {
+          "disconnected": "Not connected",
+          "connected": "Connected, not charging",
+          "charging": "Charging"
+        }
+      }
+    }
   }
 }

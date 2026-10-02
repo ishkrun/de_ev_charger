@@ -22,7 +22,8 @@ class EvChargeNowButton(EvEntity, ButtonEntity):
         super().__init__(coord, "charge_now", "Charge now")
 
     async def async_press(self):
-        await self.coordinator.async_set_charge_mode(m=MODE_OFF)
+        if self.cooldown_passed():
+            await self.coordinator.async_set_charge_mode(m=MODE_OFF)
 
 
 class EvRebootButton(EvEntity, ButtonEntity):

@@ -16,8 +16,12 @@
 - `__init__.py` — `EvCoordinator` (DataUpdateCoordinator): опрос `SCAN_INTERVAL`=30 с;
   после команды доп. опросы по `REFRESH_DELAYS`=(3, 10) с от команды через `async_refresh()` (без debounce);
   `charge_mode` хранится локально в `Store`, т.к. облако не отдаёт `x_charge_mode`.
-- `const.py` — константы, `parse_json`, `flatten`.
+- `const.py` — константы, `parse_json`, `flatten`, коды статуса, уровни CP, масштаб метрик.
+- `entity.py` — `EvEntity`, `cooldown_passed()`: не больше 1 команды за `COMMAND_COOLDOWN`=5 с
+  (Charge now, Schedule, NFC — перенесено из Node-RED).
 - Платформы: sensor, switch, number, button, time.
+- `dashboards/ev_charger_card.yaml` — карточка (custom:button-card), без input_button/Node-RED.
+- `local/` — в .gitignore: выгрузки пользователя (flows Node-RED, дашборд), не коммитить.
 
 ## Сущности
 | Entity | DP |
@@ -29,7 +33,11 @@
 | number `Max current`, `Socket config` | `x_max_current_cfg`, `x_socket_cfg` |
 | switch config | `x_plug_charge`, `x_single_fase_mode`, `x_nfc_cfg`, `x_earch_free_cfg` |
 | button `Reboot` | `x_do_reboot` |
-| sensor | `x_work_state`, raw `x_metrics`, `x_charger_info`, `x_debug`, `x_lang_cfg` |
+| sensor `Status` (enum scheduled/charging/other, attr code) | `x_work_state` |
+| sensor `Vehicle` (enum disconnected/connected/charging, attr cp) | `x_charger_info.cp` |
+| sensor `Voltage`/`Current`/`Power`, `Session energy`/`Session duration`, `CP voltage` | `x_metrics`, `x_charger_info` |
+| sensor raw | `x_work_state`, `x_metrics`, `x_charger_info`, `x_debug`, `x_lang_cfg` |
+| sensor `metrics l1_0` и т.п. (авто из JSON, только если были при старте) | `x_metrics`, `x_charger_info` — оставлены для совместимости со старой карточкой |
 
 `x_do_reset` намеренно не выведен (заводской сброс). Switch `x_do_charge` удалён — не останавливает зарядку.
 
@@ -40,17 +48,21 @@
 - `x_charge_history` (String, только в логах, в status нет): `{"t":"2026-10-01 15:53:00","s":"15:53","e":"18:32","d":9580,"c":60}`
   - t — начало, s/e — HH:MM, d — длительность в секундах (подтверждено), c — предположительно энергия ×0.1 кВт·ч (не сверено с приложением).
 - `x_charge_current` — облако обновляется при изменении из приложения (подтверждено).
+- `x_metrics` (String, в status приходит): `{"l1":[V*10, A*10, kW*10], "e": kWh*10, "d": сек*10}`,
+  для 3 фаз ожидаются `l2`, `l3`. Масштаб взят из карточки ChatGPT, совпадает с её показаниями; с приложением не сверялся.
+- `x_charger_info` (String): содержит `cp` — напряжение Control Pilot, В: 12.1 — нет машины, 9 — подключена, 6 — заряд подаётся (±7%).
+- `x_work_state`: 202 — ожидание по расписанию, 300 — зарядка идёт; остальные не расшифрованы.
 
 ## Известные ограничения
-- В облачном status пустые: `x_metrics`, `x_charger_info`, `x_charge_mode`; в Device Logs по `x_metrics`, `x_work_state`, `x_charge_mode` записей нет.
-  Приложение (Tuya mini-program панель) получает напряжение/ток/мощность иным путём — вероятно LAN или после `x_heartbeat`.
+- `x_charge_mode` в облачном status пустой → хранится локально.
+- Стоп зарядки: отдельной команды нет; Schedule ON (m=2) вне окна расписания останавливает зарядку (так делал Node-RED-поток).
 - Instruction-only DP (не в status): `dp_num`, `x_product_varient`, `x_work_st_debug`, `x_downcounter` (остаток до старта по расписанию),
   `x_adjust_current`, `x_charge_history`, `x_alarm`, `x_selftest`.
 
 ## Открытые задачи
-1. Команда «стоп зарядки» — неизвестна (x_do_charge=false не работает). Нужен тест: старт свайпом в приложении → стоп → смотреть DP.
-2. Live-метрики: проверить гипотезу `x_heartbeat=true` → появится ли `x_metrics`. Если нет — нужен локальный мост (local_tuya / второй HA в сети зарядки).
-3. Расшифровка кодов `x_work_state` (сейчас 1 = ожидание?) → человекочитаемый статус.
+1. Прямая команда «стоп зарядки» — неизвестна (x_do_charge=false не работает); пока обход через Schedule ON.
+2. Сверить масштаб `x_metrics` (V/A/kW/kWh/d) с приложением во время реальной зарядки.
+3. Расшифровка остальных кодов `x_work_state` → добавить в `WORK_STATES`.
 4. Сенсоры последней сессии из `x_charge_history` (если удастся получать через API, например device logs API).
 5. Options flow: SCAN_INTERVAL из UI.
 

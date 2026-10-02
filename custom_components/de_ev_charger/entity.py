@@ -1,7 +1,12 @@
+import logging
+import time
+
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import COMMAND_COOLDOWN, DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class EvEntity(CoordinatorEntity):
@@ -18,7 +23,17 @@ class EvEntity(CoordinatorEntity):
             manufacturer="dé",
             model="EV Charger gd version",
         )
+        self._last_command = float("-inf")
 
     @property
     def dp(self):
         return (self.coordinator.data or {}).get(self._key)
+
+    def cooldown_passed(self) -> bool:
+        """Не чаще одной команды за COMMAND_COOLDOWN с (защита от повторных нажатий)."""
+        now = time.monotonic()
+        if now - self._last_command < COMMAND_COOLDOWN:
+            _LOGGER.debug("%s: повтор пропущен (%s с)", self.entity_id, COMMAND_COOLDOWN)
+            return False
+        self._last_command = now
+        return True

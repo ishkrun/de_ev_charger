@@ -10,6 +10,7 @@ CONF_REGION = "region"
 
 SCAN_INTERVAL = 30  # секунд
 REFRESH_DELAYS = (3, 10)  # секунд от команды: 1-й через 3, 2-й ещё через 7
+COMMAND_COOLDOWN = 5  # секунд: не чаще 1 команды от одной кнопки/переключателя
 
 REGIONS = {
     "eu": "https://openapi.tuyaeu.com",
@@ -27,6 +28,17 @@ JSON_DPS = ("x_metrics", "x_charger_info")
 MODE_OFF = 0
 MODE_SCHEDULE = 2
 DEFAULT_CHARGE_MODE = {"m": 0, "dt": 0, "ss": "00:00", "se": "08:00"}
+
+# x_work_state -> ключ статуса (остальные коды -> "other")
+WORK_STATES = {202: "scheduled", 300: "charging"}
+
+# x_metrics: {"l1":[V*10, A*10, kW*10], "e": kWh*10, "d": c*10}
+METRICS_SCALE = 10
+PHASES = ("l1", "l2", "l3")
+
+# x_charger_info.cp - напряжение Control Pilot, В (±7%)
+CP_LEVELS = (("disconnected", 12.1), ("connected", 9.0), ("charging", 6.0))
+CP_TOLERANCE = 0.07
 
 
 def parse_json(value):

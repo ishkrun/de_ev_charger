@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "dé EV Charger (Tuya Cloud)",
+        "data": {
+          "access_id": "Access ID",
+          "access_secret": "Access Secret",
+          "device_id": "Device ID",
+          "region": "Регион"
+        }
+      }
+    },
+    "error": {
+      "api_error": "Ошибка Tuya API - проверьте ключи, регион и подписки Service API (см. лог)",
+      "cannot_connect": "Нет связи с Tuya Cloud"
+    },
+    "abort": {
+      "already_configured": "Устройство уже настроено"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Статус",
+        "state": {
+          "scheduled": "Ожидание по расписанию",
+          "charging": "Зарядка идёт",
+          "other": "Другое"
+        }
+      },
+      "vehicle": {
+        "name": "Автомобиль",
+        "state": {
+          "disconnected": "Не подключён",
+          "connected": "Подключён, заряд не подаётся",
+          "charging": "Заряд подаётся"
+        }
+      }
+    }
+  }
+}
