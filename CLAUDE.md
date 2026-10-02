@@ -21,7 +21,7 @@
   (Charge now, Schedule, NFC — перенесено из Node-RED).
 - Платформы: sensor, switch, number, button, time.
 - `panel.py` + `frontend/de-ev-charger-card.js` — встроенная карточка `custom:de-ev-charger-card` (vanilla JS, без button-card)
-  и панель «Зарядка» (`/ev-charger`, panel_custom); JS раздаётся static path `/de_ev_charger_static/...?v=<version>`
+  и страница «Зарядка» (`/ev-charger`, panel_custom без sidebar_title → нет в меню); JS раздаётся static path `/de_ev_charger_static/...?v=<version>`
   и подключается во все дашборды через `frontend.add_extra_js_url`. Device info → `configuration_url=homeassistant://ev-charger`.
   Внешний вид и вызовы — по карточке ChatGPT (`local/card.yaml`). Тест: мок-hass страница в scratchpad, ha-card/ha-icon — заглушки.
 - `dashboards/ev_charger_card.yaml` — та же карточка на custom:button-card (альтернатива).

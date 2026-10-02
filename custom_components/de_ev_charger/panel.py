@@ -1,4 +1,4 @@
-"""Встроенная карточка (custom:de-ev-charger-card) и панель «Зарядка» в боковом меню."""
+"""Встроенная карточка (custom:de-ev-charger-card) и страница «Зарядка» (/ev-charger, без пункта в меню)."""
 import logging
 from pathlib import Path
 
@@ -33,8 +33,8 @@ async def async_register_frontend(hass: HomeAssistant) -> None:
                 hass,
                 frontend_url_path=PANEL_URL,
                 webcomponent_name="de-ev-charger-panel",
-                sidebar_title="Зарядка",
-                sidebar_icon="mdi:ev-station",
+                # без sidebar_title панель не попадает в боковое меню,
+                # открывается по ссылке Visit со страницы устройства
                 module_url=hass.data[DATA_CARD_URL],
                 require_admin=False,
             )
