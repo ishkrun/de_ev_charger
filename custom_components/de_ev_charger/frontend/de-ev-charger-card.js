@@ -24,7 +24,8 @@ const STYLE = `
   .status { position: relative; display: flex; align-items: center; justify-content: center;
     min-height: 24px; padding: 0 28px; color: #009bb6; font-size: 17px; font-weight: 700; text-align: center; }
   .status ha-icon { position: absolute; left: 4px; top: 50%; transform: translateY(-50%); --mdc-icon-size: 22px; }
-  .session { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+  .session { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; font-size: 13px; }
+  .session span { white-space: nowrap; }
   .session b { color: #51b654; }
   .metrics { display: flex; gap: 8px; background: var(--secondary-background-color);
     border: 2px solid var(--divider-color, #d5d8da); border-radius: 18px; padding: 6px 4px; }
@@ -41,13 +42,21 @@ const STYLE = `
   .current { display: grid; grid-template-columns: 24px auto 1fr; align-items: center; gap: 14px; padding: 10px 16px; }
   .current ha-icon { color: #50769a; }
   .current .title { font-weight: 600; }
-  .current input { width: 100%; accent-color: #50769a; cursor: pointer; }
+  .current .title, #current-value { white-space: nowrap; }
+  .current input { -webkit-appearance: none; appearance: none; width: 100%; min-width: 60px; height: 40px; margin: 0;
+    border-radius: 12px; cursor: pointer; outline: none;
+    background: linear-gradient(to right, #50769a var(--pct, 0%), rgba(80, 118, 154, .2) var(--pct, 0%)); }
+  .current input::-webkit-slider-thumb { -webkit-appearance: none; width: 6px; height: 24px; border-radius: 3px;
+    background: #fff; box-shadow: 0 0 3px rgba(0, 0, 0, .35); }
+  .current input::-moz-range-thumb { width: 6px; height: 24px; border: none; border-radius: 3px;
+    background: #fff; box-shadow: 0 0 3px rgba(0, 0, 0, .35); }
+  .current input:disabled { opacity: .5; cursor: default; }
   .schedule { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px;
     background: var(--secondary-background-color); border-radius: 22px; }
-  .time { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 4px 12px;
-    box-sizing: border-box; border-radius: 10px; cursor: pointer; }
-  .time .label { font-size: 12px; color: var(--secondary-text-color); }
-  .time .value { font-size: 18px; font-weight: 600; }
+  .time { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; padding: 4px 12px;
+    box-sizing: border-box; border-radius: 10px; cursor: pointer; min-width: 0; }
+  .time .label { font-size: 12px; color: var(--secondary-text-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .time .value { font-size: 18px; font-weight: 600; white-space: nowrap; }
 `;
 
 const TEMPLATE = `
@@ -167,6 +176,7 @@ class DeEvChargerCard extends HTMLElement {
     slider.addEventListener("input", () => {
       this._dragging = true;
       this._el("current-value").textContent = `${slider.value} A`;
+      this._fill(slider);
     });
     slider.addEventListener("change", () => {
       this._dragging = false;
@@ -223,11 +233,19 @@ class DeEvChargerCard extends HTMLElement {
       this._el("current-value").textContent = value === null ? "—" : `${value} A`;
     }
     slider.disabled = value === null;
+    this._fill(slider);
 
     for (const [key, id] of [["schedule_start", "start-value"], ["schedule_end", "end-value"]]) {
       const st = this._st("time", key)?.state;
       this._el(id).textContent = st && st.includes(":") ? st.slice(0, 5) : "—";
     }
+  }
+
+  _fill(slider) {
+    const min = Number(slider.min);
+    const max = Number(slider.max);
+    const pct = max > min ? ((Number(slider.value) - min) / (max - min)) * 100 : 0;
+    slider.style.setProperty("--pct", `${pct}%`);
   }
 
   _press(el, domain, service, entityId) {
