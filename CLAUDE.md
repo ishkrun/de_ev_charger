@@ -82,5 +82,8 @@
 
 ## Релиз
 1. Поднять `version` в `manifest.json`.
-2. `git commit` → `git tag vX.Y.Z` → `git push --tags` → GitHub Release из тега (HACS видит версии по релизам).
+2. `git commit` → `git tag vX.Y.Z` → `git push --tags` → GitHub Release из тега (HACS видит версии по релизам):
+   `gh release create vX.Y.Z --title vX.Y.Z --notes-file notes.md`.
+   Описание релиза — на трёх языках, секции `## 🇷🇺 Русский`, `## 🇬🇧 English`, `## 🇪🇸 Español`.
+   Версии — маленькими шагами (0.1.x), если пользователь не сказал иначе.
 3. Проверка синтаксиса: `python3 -m py_compile custom_components/de_ev_charger/*.py`.
