@@ -1,7 +1,16 @@
-# Карточка dé EV Charger. Требуется custom:button-card (HACS → Dashboard).
+# Карточка dé EV Charger на custom:button-card (HACS → Dashboard), только русский текст.
+# Встроенная карточка custom:de-ev-charger-card (ru/en/es) обычно удобнее.
 # Дашборд → ✎ → Добавить карточку → Вручную → вставить целиком.
 # Хелперы input_button и потоки Node-RED не нужны: кнопки вызывают сущности напрямую,
 # защита от повторных нажатий (5 с) встроена в интеграцию.
+# Entity ID ниже - как их создаёт HA на английском/русском языке системы.
+#
+# dé EV Charger card on custom:button-card (HACS → Dashboard), Russian text only.
+# The built-in card custom:de-ev-charger-card (ru/en/es) is usually more convenient.
+# Dashboard → ✎ → Add card → Manual → paste the whole file.
+# No input_button helpers or Node-RED flows needed: buttons call the entities directly,
+# repeated-press protection (5 s) is built into the integration.
+# Entity IDs below are the ones HA creates with an English/Russian system language.
 type: vertical-stack
 cards:
   - type: custom:button-card

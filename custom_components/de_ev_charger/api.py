@@ -1,4 +1,5 @@
-"""Минимальный клиент Tuya Cloud OpenAPI (подпись HMAC-SHA256)."""
+"""Минимальный клиент Tuya Cloud OpenAPI (подпись HMAC-SHA256).
+Minimal Tuya Cloud OpenAPI client (HMAC-SHA256 signing)."""
 import hashlib
 import hmac
 import json
@@ -68,7 +69,9 @@ class TuyaCloudApi:
         try:
             return await self._raw(method, path, body, self._token)
         except TuyaApiError as err:
-            if err.code in (1010, 1011):  # токен истёк / невалиден
+            # 1010/1011 - токен истёк / невалиден: обновить и повторить
+            # 1010/1011 - token expired / invalid: refresh and retry
+            if err.code in (1010, 1011):
                 await self._ensure_token(force=True)
                 return await self._raw(method, path, body, self._token)
             raise

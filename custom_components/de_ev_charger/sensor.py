@@ -16,12 +16,13 @@ from .const import (
 from .entity import EvEntity
 
 RAW_SENSORS = {
-    "x_work_state": ("Work state", None),
-    "x_charge_mode": ("Charge mode", None),
-    "x_metrics": ("Metrics raw", EntityCategory.DIAGNOSTIC),
-    "x_charger_info": ("Charger info", EntityCategory.DIAGNOSTIC),
-    "x_debug": ("Debug", EntityCategory.DIAGNOSTIC),
-    "x_lang_cfg": ("Language", EntityCategory.DIAGNOSTIC),
+    # code: (translation_key, категория / category)
+    "x_work_state": ("work_state", None),
+    "x_charge_mode": ("charge_mode", None),
+    "x_metrics": ("metrics_raw", EntityCategory.DIAGNOSTIC),
+    "x_charger_info": ("charger_info", EntityCategory.DIAGNOSTIC),
+    "x_debug": ("debug", EntityCategory.DIAGNOSTIC),
+    "x_lang_cfg": ("language", EntityCategory.DIAGNOSTIC),
 }
 
 
@@ -30,18 +31,21 @@ def _num(value):
 
 
 def _metrics(data):
-    """x_metrics с ключами в нижнем регистре (облако шлёт "L1", "L2", "L3")."""
+    """x_metrics с ключами в нижнем регистре (облако шлёт "L1", "L2", "L3").
+    x_metrics with lower-case keys (the cloud sends "L1", "L2", "L3")."""
     return {str(k).lower(): v for k, v in (parse_json(data.get("x_metrics")) or {}).items()}
 
 
 def _metric(data, field, scale=METRICS_SCALE):
-    """Поле x_metrics / scale."""
+    """Поле x_metrics / scale.
+    x_metrics field / scale."""
     val = _num(_metrics(data).get(field))
     return None if val is None else val / scale
 
 
 def _phases(data, idx):
-    """{'l1': V|A|kW, ...} по фазам, которые есть в x_metrics."""
+    """{'l1': V|A|kW, ...} по фазам, которые есть в x_metrics.
+    {'l1': V|A|kW, ...} for the phases present in x_metrics."""
     metrics = _metrics(data)
     out = {}
     for phase in PHASES:
@@ -59,6 +63,8 @@ def _cp(data):
 
 
 def _vehicle(data):
+    """Состояние машины по напряжению CP: 12.1 / 9 / 6 В (±7%).
+    Vehicle state from CP voltage: 12.1 / 9 / 6 V (±7%)."""
     cp = _cp(data)
     if cp is None:
         return None
@@ -81,7 +87,8 @@ def _status(data):
 
 
 def _duration(data):
-    val = _metric(data, "d", scale=1)  # секунды, без масштаба
+    # Секунды, без масштаба / Seconds, no scaling
+    val = _metric(data, "d", scale=1)
     return None if val is None else int(val)
 
 
@@ -94,6 +101,8 @@ def _phase_attrs(idx):
 
 
 def _power(data):
+    """Суммарная мощность по фазам, кВт.
+    Total power over phases, kW."""
     vals = _phases(data, 2)
     return round(sum(vals.values()), 2) if vals else None
 
@@ -107,45 +116,47 @@ class EvSensorDescription(SensorEntityDescription):
 V, A = UnitOfElectricPotential.VOLT, UnitOfElectricCurrent.AMPERE
 MEASUREMENT = SensorStateClass.MEASUREMENT
 
+# Расчётные сенсоры: key = часть unique_id, translation_key = имя (ru/en/es) и ключ для карточки
+# Computed sensors: key = part of unique_id, translation_key = name (ru/en/es) and the card lookup key
 SENSORS = (
     EvSensorDescription(
-        key="status", name="Status", translation_key="status", icon="mdi:ev-station",
+        key="status", translation_key="status", icon="mdi:ev-station",
         device_class=SensorDeviceClass.ENUM, options=[*WORK_STATES.values(), "other"],
         value_fn=_status, attrs_fn=lambda d: {"code": _work_code(d)},
     ),
     EvSensorDescription(
-        key="vehicle", name="Vehicle", translation_key="vehicle", icon="mdi:car-electric",
+        key="vehicle", translation_key="vehicle", icon="mdi:car-electric",
         device_class=SensorDeviceClass.ENUM, options=[s for s, _ in CP_LEVELS],
         value_fn=_vehicle, attrs_fn=lambda d: {"cp": _cp(d)},
     ),
     EvSensorDescription(
-        key="voltage", name="Voltage", device_class=SensorDeviceClass.VOLTAGE,
+        key="voltage", translation_key="voltage", device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=V, state_class=MEASUREMENT, suggested_display_precision=0,
         value_fn=_l1(0), attrs_fn=_phase_attrs(0),
     ),
     EvSensorDescription(
-        key="current", name="Current", device_class=SensorDeviceClass.CURRENT,
+        key="current", translation_key="current", device_class=SensorDeviceClass.CURRENT,
         native_unit_of_measurement=A, state_class=MEASUREMENT, suggested_display_precision=1,
         value_fn=_l1(1), attrs_fn=_phase_attrs(1),
     ),
     EvSensorDescription(
-        key="power", name="Power", device_class=SensorDeviceClass.POWER,
+        key="power", translation_key="power", device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.KILO_WATT, state_class=MEASUREMENT,
         suggested_display_precision=1, value_fn=_power, attrs_fn=_phase_attrs(2),
     ),
     EvSensorDescription(
-        key="session_energy", name="Session energy", device_class=SensorDeviceClass.ENERGY,
+        key="session_energy", translation_key="session_energy", device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING, suggested_display_precision=1,
         value_fn=lambda d: _metric(d, "e"),
     ),
     EvSensorDescription(
-        key="session_duration", name="Session duration", device_class=SensorDeviceClass.DURATION,
-        native_unit_of_measurement=UnitOfTime.SECONDS, icon="mdi:timer-outline",
-        suggested_display_precision=0, value_fn=_duration,
+        key="session_duration", translation_key="session_duration",
+        device_class=SensorDeviceClass.DURATION, native_unit_of_measurement=UnitOfTime.SECONDS,
+        icon="mdi:timer-outline", suggested_display_precision=0, value_fn=_duration,
     ),
     EvSensorDescription(
-        key="cp_voltage", name="CP voltage", device_class=SensorDeviceClass.VOLTAGE,
+        key="cp_voltage", translation_key="cp_voltage", device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=V, state_class=MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC, value_fn=_cp,
     ),
@@ -156,23 +167,28 @@ async def async_setup_entry(hass, entry, async_add_entities):
     coord = entry.runtime_data
     data = coord.data or {}
     entities = [
-        EvRawSensor(coord, code, name, cat)
-        for code, (name, cat) in RAW_SENSORS.items()
+        EvRawSensor(coord, code, tkey, cat)
+        for code, (tkey, cat) in RAW_SENSORS.items()
         if code in data
     ]
-    # Автоматически создаём сенсоры из числовых полей JSON-строк
+    # Сенсоры из числовых полей JSON-строк (старые, для совместимости с прежними карточками)
+    # Sensors from numeric fields of JSON strings (legacy, kept for older cards)
     for code in JSON_DPS:
         for field, value in flatten(parse_json(data.get(code))).items():
             if isinstance(value, (int, float)) and not isinstance(value, bool):
                 entities.append(EvJsonSensor(coord, code, field))
     # Расчётные сенсоры создаются всегда (даже если облако пока не отдало данные)
+    # Computed sensors are always created (even if the cloud has no data yet)
     entities.extend(EvSensor(coord, desc) for desc in SENSORS)
     async_add_entities(entities)
 
 
 class EvRawSensor(EvEntity, SensorEntity):
-    def __init__(self, coord, key, name, category):
-        super().__init__(coord, key, name)
+    """Сырое значение DP; JSON разворачивается в атрибуты.
+    Raw DP value; JSON is flattened into attributes."""
+
+    def __init__(self, coord, key, translation_key, category):
+        super().__init__(coord, key, translation_key)
         self._attr_entity_category = category
 
     @property
@@ -192,7 +208,9 @@ class EvJsonSensor(EvEntity, SensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(self, coord, code, field):
-        super().__init__(coord, f"{code}_{field}", f"{code[2:]} {field}")
+        # Имя без перевода: поле JSON меняется от прошивки
+        # Untranslated name: the JSON field depends on firmware
+        super().__init__(coord, f"{code}_{field}", name=f"{code[2:]} {field}")
         self._code = code
         self._field = field
 
@@ -206,7 +224,7 @@ class EvSensor(EvEntity, SensorEntity):
     entity_description: EvSensorDescription
 
     def __init__(self, coord, description: EvSensorDescription):
-        super().__init__(coord, description.key, description.name)
+        super().__init__(coord, description.key, description.translation_key)
         self.entity_description = description
 
     @property

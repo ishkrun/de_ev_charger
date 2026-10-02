@@ -1,0 +1,122 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "dé EV Charger (Tuya Cloud)",
+        "data": {
+          "access_id": "ID de acceso",
+          "access_secret": "Secreto de acceso",
+          "device_id": "ID del dispositivo",
+          "region": "Región"
+        }
+      }
+    },
+    "error": {
+      "api_error": "Error de la API de Tuya: revise las claves, la región y las suscripciones de Service API (ver registro)",
+      "cannot_connect": "No se puede conectar con Tuya Cloud"
+    },
+    "abort": {
+      "already_configured": "El dispositivo ya está configurado"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Estado",
+        "state": {
+          "scheduled": "Esperando el horario",
+          "charging": "Cargando",
+          "other": "Otro"
+        }
+      },
+      "vehicle": {
+        "name": "Vehículo",
+        "state": {
+          "disconnected": "No conectado",
+          "connected": "Conectado, sin carga",
+          "charging": "Cargando"
+        }
+      },
+      "voltage": {
+        "name": "Tensión"
+      },
+      "current": {
+        "name": "Corriente"
+      },
+      "power": {
+        "name": "Potencia"
+      },
+      "session_energy": {
+        "name": "Energía de la sesión"
+      },
+      "session_duration": {
+        "name": "Duración de la sesión"
+      },
+      "cp_voltage": {
+        "name": "Tensión CP"
+      },
+      "work_state": {
+        "name": "Código de estado"
+      },
+      "charge_mode": {
+        "name": "Modo de carga"
+      },
+      "metrics_raw": {
+        "name": "Métricas (sin procesar)"
+      },
+      "charger_info": {
+        "name": "Información del cargador"
+      },
+      "debug": {
+        "name": "Depuración"
+      },
+      "language": {
+        "name": "Idioma"
+      }
+    },
+    "switch": {
+      "schedule": {
+        "name": "Horario"
+      },
+      "nfc": {
+        "name": "NFC"
+      },
+      "plug_and_charge": {
+        "name": "Conectar y cargar"
+      },
+      "single_phase_mode": {
+        "name": "Modo monofásico"
+      },
+      "earth_free": {
+        "name": "Sin toma de tierra"
+      }
+    },
+    "button": {
+      "charge_now": {
+        "name": "Cargar ahora"
+      },
+      "reboot": {
+        "name": "Reiniciar"
+      }
+    },
+    "number": {
+      "charge_current": {
+        "name": "Corriente de carga"
+      },
+      "max_current": {
+        "name": "Corriente máxima"
+      },
+      "socket_config": {
+        "name": "Configuración de la toma"
+      }
+    },
+    "time": {
+      "schedule_start": {
+        "name": "Inicio del horario"
+      },
+      "schedule_end": {
+        "name": "Fin del horario"
+      }
+    }
+  }
+}

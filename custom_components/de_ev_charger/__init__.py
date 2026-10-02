@@ -1,4 +1,5 @@
-"""dé EV Charger через Tuya Cloud."""
+"""dé EV Charger через Tuya Cloud.
+dé EV Charger via Tuya Cloud."""
 from datetime import timedelta
 import json
 import logging
@@ -23,6 +24,9 @@ PLATFORMS = [Platform.SENSOR, Platform.SWITCH, Platform.NUMBER, Platform.BUTTON,
 
 
 class EvCoordinator(DataUpdateCoordinator):
+    """Опрос статуса зарядки и отправка команд.
+    Polls charger status and sends commands."""
+
     def __init__(self, hass, api: TuyaCloudApi, device_id: str):
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=timedelta(seconds=SCAN_INTERVAL))
         self.api = api
@@ -32,6 +36,8 @@ class EvCoordinator(DataUpdateCoordinator):
         self._delayed_unsubs = []
 
     async def async_load(self):
+        """Загрузить последний известный x_charge_mode из хранилища HA.
+        Load the last known x_charge_mode from HA storage."""
         saved = await self._store.async_load()
         if isinstance(saved, dict):
             self.charge_mode = {**DEFAULT_CHARGE_MODE, **saved}
@@ -42,6 +48,7 @@ class EvCoordinator(DataUpdateCoordinator):
         except Exception as err:
             raise UpdateFailed(str(err)) from err
         # Облако часто не хранит x_charge_mode - тогда берём последнее известное
+        # The cloud often omits x_charge_mode - then keep the last known value
         parsed = parse_json(data.get("x_charge_mode"))
         if parsed:
             mode = {**DEFAULT_CHARGE_MODE, **parsed}
@@ -57,11 +64,15 @@ class EvCoordinator(DataUpdateCoordinator):
 
     def schedule_delayed_refresh(self):
         """Доп. опросы через REFRESH_DELAYS с после команды.
-        Новая команда отменяет запланированные и ставит заново."""
+        Новая команда отменяет запланированные и ставит заново.
+        Extra polls REFRESH_DELAYS s after a command.
+        A new command cancels pending polls and schedules them again."""
         self.cancel_delayed_refresh()
 
         async def _run(_now):
-            await self.async_refresh()  # напрямую, без 10-секундного debounce
+            # Напрямую, без 10-секундного debounce async_request_refresh
+            # Directly, bypassing the 10 s debounce of async_request_refresh
+            await self.async_refresh()
 
         for delay in REFRESH_DELAYS:
             self._delayed_unsubs.append(async_call_later(self.hass, delay, _run))
@@ -69,11 +80,14 @@ class EvCoordinator(DataUpdateCoordinator):
     async def async_send(self, code, value):
         await self.api.send(self.device_id, code, value)
         data = dict(self.data or {})
-        data[code] = value  # оптимистично, до опроса
+        # Оптимистично, до следующего опроса / Optimistic, until the next poll
+        data[code] = value
         self.async_set_updated_data(data)
         self.schedule_delayed_refresh()
 
     async def async_set_charge_mode(self, **changes):
+        """Изменить поля x_charge_mode (m, ss, se) и отправить компактным JSON.
+        Change x_charge_mode fields (m, ss, se) and send as compact JSON."""
         mode = {**self.charge_mode, **changes}
         payload = json.dumps(mode, separators=(",", ":"))
         await self.api.send(self.device_id, "x_charge_mode", payload)
@@ -101,6 +115,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    # Страницу убираем, только когда выгружена последняя запись
+    # Remove the page only when the last entry is unloaded
     others = [
         e for e in hass.config_entries.async_entries(DOMAIN)
         if e.entry_id != entry.entry_id and e.state is ConfigEntryState.LOADED

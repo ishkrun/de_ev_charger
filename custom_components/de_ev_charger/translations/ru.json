@@ -36,6 +36,86 @@
           "connected": "Подключён, заряд не подаётся",
           "charging": "Заряд подаётся"
         }
+      },
+      "voltage": {
+        "name": "Напряжение"
+      },
+      "current": {
+        "name": "Ток"
+      },
+      "power": {
+        "name": "Мощность"
+      },
+      "session_energy": {
+        "name": "Энергия за сессию"
+      },
+      "session_duration": {
+        "name": "Длительность сессии"
+      },
+      "cp_voltage": {
+        "name": "Напряжение CP"
+      },
+      "work_state": {
+        "name": "Код состояния"
+      },
+      "charge_mode": {
+        "name": "Режим зарядки"
+      },
+      "metrics_raw": {
+        "name": "Метрики (сырые)"
+      },
+      "charger_info": {
+        "name": "Информация о зарядке"
+      },
+      "debug": {
+        "name": "Отладка"
+      },
+      "language": {
+        "name": "Язык"
+      }
+    },
+    "switch": {
+      "schedule": {
+        "name": "Расписание"
+      },
+      "nfc": {
+        "name": "NFC"
+      },
+      "plug_and_charge": {
+        "name": "Зарядка при подключении"
+      },
+      "single_phase_mode": {
+        "name": "Однофазный режим"
+      },
+      "earth_free": {
+        "name": "Без заземления"
+      }
+    },
+    "button": {
+      "charge_now": {
+        "name": "Зарядить сейчас"
+      },
+      "reboot": {
+        "name": "Перезагрузка"
+      }
+    },
+    "number": {
+      "charge_current": {
+        "name": "Ток зарядки"
+      },
+      "max_current": {
+        "name": "Максимальный ток"
+      },
+      "socket_config": {
+        "name": "Настройка розетки"
+      }
+    },
+    "time": {
+      "schedule_start": {
+        "name": "Начало расписания"
+      },
+      "schedule_end": {
+        "name": "Окончание расписания"
       }
     }
   }

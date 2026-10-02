@@ -4,20 +4,24 @@ from homeassistant.components.time import TimeEntity
 
 from .entity import EvEntity
 
-TIMES = {"ss": "Schedule start", "se": "Schedule end"}
+# Поле x_charge_mode -> translation_key
+# x_charge_mode field -> translation_key
+TIMES = {"ss": "schedule_start", "se": "schedule_end"}
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coord = entry.runtime_data
-    async_add_entities(EvTime(coord, key, name) for key, name in TIMES.items())
+    async_add_entities(EvTime(coord, field, tkey) for field, tkey in TIMES.items())
 
 
 class EvTime(EvEntity, TimeEntity):
+    """Начало/окончание расписания: поля ss/se в x_charge_mode.
+    Schedule start/end: ss/se fields of x_charge_mode."""
     _attr_icon = "mdi:clock-outline"
 
-    def __init__(self, coord, key, name):
-        super().__init__(coord, f"schedule_{key}", name)
-        self._field = key
+    def __init__(self, coord, field, translation_key):
+        super().__init__(coord, f"schedule_{field}", translation_key)
+        self._field = field
 
     @property
     def native_value(self):

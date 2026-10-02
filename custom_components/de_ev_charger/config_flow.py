@@ -1,3 +1,5 @@
+"""Настройка через UI: ключи Tuya Cloud, Device ID, регион.
+UI setup: Tuya Cloud keys, Device ID, region."""
 import logging
 
 import voluptuous as vol
@@ -17,6 +19,8 @@ class EvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def async_step_user(self, user_input=None):
+        """Проверить ключи запросом статуса устройства и создать запись.
+        Validate the keys with a device status request and create the entry."""
         errors = {}
         if user_input is not None:
             await self.async_set_unique_id(user_input[CONF_DEVICE_ID])

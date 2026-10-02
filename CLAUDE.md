@@ -1,6 +1,8 @@
 # dé EV Charger — Home Assistant custom integration (Tuya Cloud)
 
 Отвечай кратко, по-русски. Код выдавай целиком, не кусками.
+Комментарии и docstring в коде — на двух языках: строка по-русски, следом по-английски.
+Тексты UI — ru/en/es: `translations/{en,ru,es}.json` (+ `strings.json` = en) и `I18N` в карточке.
 
 ## Контекст
 - Зарядка «dé EV Charger gd version», Tuya, категория `dj` (ошибочная категория «свет»),
@@ -20,6 +22,11 @@
 - `entity.py` — `EvEntity`, `cooldown_passed()`: не больше 1 команды за `COMMAND_COOLDOWN`=5 с
   (Charge now, Schedule, NFC — перенесено из Node-RED).
 - Платформы: sensor, switch, number, button, time.
+- Имена сущностей — только через `translation_key` (переводы en/ru/es); `unique_id` = `{device_id}_{key}`, key не менять.
+  Исключение — динамические `EvJsonSensor` (`metrics l1_0` и т.п.), у них `_attr_name` без перевода.
+- entity_id: HA генерирует из имени на языке системы, если язык в `NATIVE_ENTITY_IDS` (es — да, ru — нет → en).
+  Поэтому карточка ищет сущности по `hass.entities[*].platform == "de_ev_charger"` + `translation_key`,
+  запасной вариант — `prefix` (`de_ev_charger`). Карточка: `language` (auto/ru/en/es), `device_id`, визуальный редактор.
 - `panel.py` + `frontend/de-ev-charger-card.js` — встроенная карточка `custom:de-ev-charger-card` (vanilla JS, без button-card)
   и страница «Зарядка» (`/ev-charger`, panel_custom без sidebar_title → нет в меню); JS раздаётся static path `/de_ev_charger_static/...?v=<version>`
   и подключается во все дашборды через `frontend.add_extra_js_url`. Device info → `configuration_url=homeassistant://ev-charger`.

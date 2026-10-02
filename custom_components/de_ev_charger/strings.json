@@ -36,6 +36,86 @@
           "connected": "Connected, not charging",
           "charging": "Charging"
         }
+      },
+      "voltage": {
+        "name": "Voltage"
+      },
+      "current": {
+        "name": "Current"
+      },
+      "power": {
+        "name": "Power"
+      },
+      "session_energy": {
+        "name": "Session energy"
+      },
+      "session_duration": {
+        "name": "Session duration"
+      },
+      "cp_voltage": {
+        "name": "CP voltage"
+      },
+      "work_state": {
+        "name": "Work state"
+      },
+      "charge_mode": {
+        "name": "Charge mode"
+      },
+      "metrics_raw": {
+        "name": "Metrics raw"
+      },
+      "charger_info": {
+        "name": "Charger info"
+      },
+      "debug": {
+        "name": "Debug"
+      },
+      "language": {
+        "name": "Language"
+      }
+    },
+    "switch": {
+      "schedule": {
+        "name": "Schedule"
+      },
+      "nfc": {
+        "name": "NFC"
+      },
+      "plug_and_charge": {
+        "name": "Plug and charge"
+      },
+      "single_phase_mode": {
+        "name": "Single phase mode"
+      },
+      "earth_free": {
+        "name": "Earth free"
+      }
+    },
+    "button": {
+      "charge_now": {
+        "name": "Charge now"
+      },
+      "reboot": {
+        "name": "Reboot"
+      }
+    },
+    "number": {
+      "charge_current": {
+        "name": "Charge current"
+      },
+      "max_current": {
+        "name": "Max current"
+      },
+      "socket_config": {
+        "name": "Socket config"
+      }
+    },
+    "time": {
+      "schedule_start": {
+        "name": "Schedule start"
+      },
+      "schedule_end": {
+        "name": "Schedule end"
       }
     }
   }

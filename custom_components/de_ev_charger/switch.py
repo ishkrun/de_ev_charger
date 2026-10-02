@@ -5,11 +5,11 @@ from .const import MODE_OFF, MODE_SCHEDULE
 from .entity import EvEntity
 
 SWITCHES = {
-    # code: (name, category, защита от повторов)
-    "x_plug_charge": ("Plug and charge", EntityCategory.CONFIG, False),
-    "x_single_fase_mode": ("Single phase mode", EntityCategory.CONFIG, False),
-    "x_nfc_cfg": ("NFC", EntityCategory.CONFIG, True),
-    "x_earch_free_cfg": ("Earth free", EntityCategory.CONFIG, False),
+    # code: (translation_key, категория / category, защита от повторов / repeat protection)
+    "x_plug_charge": ("plug_and_charge", EntityCategory.CONFIG, False),
+    "x_single_fase_mode": ("single_phase_mode", EntityCategory.CONFIG, False),
+    "x_nfc_cfg": ("nfc", EntityCategory.CONFIG, True),
+    "x_earch_free_cfg": ("earth_free", EntityCategory.CONFIG, False),
 }
 
 
@@ -21,8 +21,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class EvSwitch(EvEntity, SwitchEntity):
-    def __init__(self, coord, key, name, category, cooldown):
-        super().__init__(coord, key, name)
+    def __init__(self, coord, key, translation_key, category, cooldown):
+        super().__init__(coord, key, translation_key)
         self._attr_entity_category = category
         self._cooldown = cooldown
 
@@ -43,11 +43,13 @@ class EvSwitch(EvEntity, SwitchEntity):
 
 class EvScheduleSwitch(EvEntity, SwitchEntity):
     """Зарядка по расписанию: x_charge_mode m=2 (вкл) / m=0 (выкл).
-    Включение вне окна расписания останавливает идущую зарядку."""
+    Включение вне окна расписания останавливает идущую зарядку.
+    Scheduled charging: x_charge_mode m=2 (on) / m=0 (off).
+    Turning it on outside the schedule window stops an ongoing charge."""
     _attr_icon = "mdi:calendar-clock"
 
     def __init__(self, coord):
-        super().__init__(coord, "schedule", "Schedule")
+        super().__init__(coord, "schedule", "schedule")
 
     @property
     def is_on(self):
