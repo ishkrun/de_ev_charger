@@ -29,15 +29,20 @@ def _num(value):
     return value if isinstance(value, (int, float)) and not isinstance(value, bool) else None
 
 
-def _metric(data, field):
-    """Поле x_metrics / METRICS_SCALE."""
-    val = _num((parse_json(data.get("x_metrics")) or {}).get(field))
-    return None if val is None else val / METRICS_SCALE
+def _metrics(data):
+    """x_metrics с ключами в нижнем регистре (облако шлёт "L1", "L2", "L3")."""
+    return {str(k).lower(): v for k, v in (parse_json(data.get("x_metrics")) or {}).items()}
+
+
+def _metric(data, field, scale=METRICS_SCALE):
+    """Поле x_metrics / scale."""
+    val = _num(_metrics(data).get(field))
+    return None if val is None else val / scale
 
 
 def _phases(data, idx):
     """{'l1': V|A|kW, ...} по фазам, которые есть в x_metrics."""
-    metrics = parse_json(data.get("x_metrics")) or {}
+    metrics = _metrics(data)
     out = {}
     for phase in PHASES:
         arr = metrics.get(phase)
@@ -76,7 +81,7 @@ def _status(data):
 
 
 def _duration(data):
-    val = _metric(data, "d")
+    val = _metric(data, "d", scale=1)  # секунды, без масштаба
     return None if val is None else int(val)
 
 
@@ -137,7 +142,7 @@ SENSORS = (
     EvSensorDescription(
         key="session_duration", name="Session duration", device_class=SensorDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.SECONDS, icon="mdi:timer-outline",
-        value_fn=_duration,
+        suggested_display_precision=0, value_fn=_duration,
     ),
     EvSensorDescription(
         key="cp_voltage", name="CP voltage", device_class=SensorDeviceClass.VOLTAGE,

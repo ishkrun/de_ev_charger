@@ -32,7 +32,7 @@ DEFAULT_CHARGE_MODE = {"m": 0, "dt": 0, "ss": "00:00", "se": "08:00"}
 # x_work_state -> ключ статуса (остальные коды -> "other")
 WORK_STATES = {202: "scheduled", 300: "charging"}
 
-# x_metrics: {"l1":[V*10, A*10, kW*10], "e": kWh*10, "d": c*10}
+# x_metrics: {"L1":[V*10, A*10, kW*10], "L2":[...], "L3":[...], "t":?, "p":?, "e": kWh*10, "d": сек}
 METRICS_SCALE = 10
 PHASES = ("l1", "l2", "l3")
 

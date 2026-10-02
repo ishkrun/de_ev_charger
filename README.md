@@ -27,7 +27,7 @@
 | sensor *Status* (ожидание по расписанию / зарядка / другое) | `x_work_state` (202, 300) |
 | sensor *Vehicle* (не подключён / подключён / заряд подаётся) | `x_charger_info.cp` (12.1 / 9 / 6 В ±7%) |
 | sensor *Voltage*, *Current*, *Power* | `x_metrics.l1..l3` (÷10) |
-| sensor *Session energy* (кВт·ч), *Session duration* | `x_metrics.e`, `x_metrics.d` (÷10) |
+| sensor *Session energy* (кВт·ч), *Session duration* (с) | `x_metrics.e` (÷10), `x_metrics.d` |
 | sensor *CP voltage*, *Work state* и сырые диагностические | `x_charger_info`, `x_work_state`, `x_metrics`, `x_debug`, `x_lang_cfg` |
 
 Кнопка *Charge now*, переключатели *Schedule* и *NFC* принимают не больше одной команды за 5 секунд
