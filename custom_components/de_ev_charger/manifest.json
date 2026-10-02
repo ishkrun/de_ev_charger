@@ -1,0 +1,12 @@
+{
+  "domain": "de_ev_charger",
+  "name": "dé EV Charger (Tuya Cloud)",
+  "codeowners": ["@ishkrun"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/ishkrun/de_ev_charger",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/ishkrun/de_ev_charger/issues",
+  "requirements": [],
+  "version": "0.3.4"
+}

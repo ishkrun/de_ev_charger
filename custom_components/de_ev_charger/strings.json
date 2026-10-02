@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "dé EV Charger (Tuya Cloud)",
+        "data": {
+          "access_id": "Access ID",
+          "access_secret": "Access Secret",
+          "device_id": "Device ID",
+          "region": "Region"
+        }
+      }
+    },
+    "error": {
+      "api_error": "Tuya API error - check keys, region and Service API subscriptions (see log)",
+      "cannot_connect": "Cannot connect to Tuya Cloud"
+    },
+    "abort": {
+      "already_configured": "Device already configured"
+    }
+  }
+}
