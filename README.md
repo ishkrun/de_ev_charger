@@ -35,7 +35,7 @@
 | сенсор *Статус* (ожидание по расписанию / зарядка идёт / другое) | `x_work_state` (202, 300) |
 | сенсор *Автомобиль* (не подключён / подключён / заряд подаётся) | `x_charger_info.cp` (12.1 / 9 / 6 В ±7%) |
 | сенсоры *Напряжение*, *Ток*, *Мощность* | `x_metrics.L1..L3` (÷10) |
-| сенсоры *Энергия за сессию* (кВт·ч), *Длительность сессии* (с) | `x_metrics.e` (÷10), `x_metrics.d` |
+| сенсоры *Энергия за сессию* (кВт·ч), *Длительность сессии* (с) | `x_metrics.e`, `x_metrics.d` (÷10) |
 | сенсоры *Напряжение CP*, *Код состояния* и сырые диагностические | `x_charger_info`, `x_work_state`, `x_metrics`, `x_debug`, `x_lang_cfg` |
 
 *Зарядить сейчас*, *Расписание* и *NFC* принимают не больше одной команды за 5 секунд (защита от повторных нажатий).
@@ -97,7 +97,7 @@ A cloud project on [iot.tuya.com](https://iot.tuya.com) with the app account lin
 | sensor *Status* (waiting for schedule / charging / other) | `x_work_state` (202, 300) |
 | sensor *Vehicle* (not connected / connected / charging) | `x_charger_info.cp` (12.1 / 9 / 6 V ±7%) |
 | sensors *Voltage*, *Current*, *Power* | `x_metrics.L1..L3` (÷10) |
-| sensors *Session energy* (kWh), *Session duration* (s) | `x_metrics.e` (÷10), `x_metrics.d` |
+| sensors *Session energy* (kWh), *Session duration* (s) | `x_metrics.e`, `x_metrics.d` (÷10) |
 | sensors *CP voltage*, *Work state* and raw diagnostics | `x_charger_info`, `x_work_state`, `x_metrics`, `x_debug`, `x_lang_cfg` |
 
 *Charge now*, *Schedule* and *NFC* accept at most one command per 5 seconds (protection against repeated presses).
@@ -159,7 +159,7 @@ Un proyecto en la nube en [iot.tuya.com](https://iot.tuya.com) con la cuenta de 
 | sensor *Estado* (esperando el horario / cargando / otro) | `x_work_state` (202, 300) |
 | sensor *Vehículo* (no conectado / conectado / cargando) | `x_charger_info.cp` (12.1 / 9 / 6 V ±7%) |
 | sensores *Tensión*, *Corriente*, *Potencia* | `x_metrics.L1..L3` (÷10) |
-| sensores *Energía de la sesión* (kWh), *Duración de la sesión* (s) | `x_metrics.e` (÷10), `x_metrics.d` |
+| sensores *Energía de la sesión* (kWh), *Duración de la sesión* (s) | `x_metrics.e`, `x_metrics.d` (÷10) |
 | sensores *Tensión CP*, *Código de estado* y diagnósticos sin procesar | `x_charger_info`, `x_work_state`, `x_metrics`, `x_debug`, `x_lang_cfg` |
 
 *Cargar ahora*, *Horario* y *NFC* aceptan como máximo un comando cada 5 segundos (protección contra pulsaciones repetidas).

@@ -87,8 +87,9 @@ def _status(data):
 
 
 def _duration(data):
-    # Секунды, без масштаба / Seconds, no scaling
-    val = _metric(data, "d", scale=1)
+    # d - десятые доли секунды (подтверждено: 11890 -> 19:49)
+    # d - tenths of a second (confirmed: 11890 -> 19:49)
+    val = _metric(data, "d")
     return None if val is None else int(val)
 
 

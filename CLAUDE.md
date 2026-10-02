@@ -71,7 +71,7 @@
 - `x_charge_current` — облако обновляется при изменении из приложения (подтверждено).
 - `x_metrics` (String, в status приходит): `{"L1":[2320,0,0],"L2":[0,0,0],"L3":[0,0,0],"t":250,"p":0,"d":11700,"e":4}`
   - ключи фаз ЗАГЛАВНЫЕ; `Lx` = [V×10, A×10, kW×10] (V подтверждено: 232 В); `e` — кВт·ч×10;
-  - `d` — секунды (по приросту между двумя замерами ≈ реальному времени; ×10 из карточки ChatGPT был неверен);
+  - `d` — десятые доли секунды, ÷10 → секунды (подтверждено пользователем: 11890 → 19:49; в v0.1.2–0.1.7 ошибочно считалось секундами);
   - `t` — предположительно температура ×10 (25.0 °C), `p` — предположительно суммарная мощность; не выведены.
   - Масштабы A/kW/kWh с приложением не сверялись.
 - `x_charger_info` (String): `{"r":"Type B, AC 30mA + DC 6mA","fv":"7.2.6","cp":"9.0","t":"2190","e":"0"}`,
@@ -153,7 +153,7 @@ See the table in the Russian section (entity / DP mapping is identical).
 - `x_charge_current` — the cloud updates when changed from the app (confirmed).
 - `x_metrics` (String, present in status): `{"L1":[2320,0,0],"L2":[0,0,0],"L3":[0,0,0],"t":250,"p":0,"d":11700,"e":4}`
   - phase keys are UPPER case; `Lx` = [V×10, A×10, kW×10] (V confirmed: 232 V); `e` — kWh×10;
-  - `d` — seconds (its growth between two readings ≈ real time; the ×10 from the ChatGPT card was wrong);
+  - `d` — tenths of a second, ÷10 → seconds (confirmed by the user: 11890 → 19:49; v0.1.2–0.1.7 wrongly treated it as seconds);
   - `t` — presumably temperature ×10 (25.0 °C), `p` — presumably total power; not exposed.
   - A/kW/kWh scales not verified against the app.
 - `x_charger_info` (String): `{"r":"Type B, AC 30mA + DC 6mA","fv":"7.2.6","cp":"9.0","t":"2190","e":"0"}`,
@@ -235,7 +235,7 @@ Ver la tabla de la sección en ruso (la correspondencia entidad / DP es idéntic
 - `x_charge_current` — la nube se actualiza al cambiarlo desde la app (confirmado).
 - `x_metrics` (String, presente en status): `{"L1":[2320,0,0],"L2":[0,0,0],"L3":[0,0,0],"t":250,"p":0,"d":11700,"e":4}`
   - claves de fase en MAYÚSCULAS; `Lx` = [V×10, A×10, kW×10] (V confirmado: 232 V); `e` — kWh×10;
-  - `d` — segundos (su incremento entre dos lecturas ≈ tiempo real; el ×10 de la tarjeta de ChatGPT era erróneo);
+  - `d` — décimas de segundo, ÷10 → segundos (confirmado por el usuario: 11890 → 19:49; v0.1.2–0.1.7 lo trataban por error como segundos);
   - `t` — probablemente temperatura ×10 (25.0 °C), `p` — probablemente potencia total; no expuestos.
   - Escalas A/kW/kWh sin verificar con la app.
 - `x_charger_info` (String): `{"r":"Type B, AC 30mA + DC 6mA","fv":"7.2.6","cp":"9.0","t":"2190","e":"0"}`,
