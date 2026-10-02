@@ -4,7 +4,7 @@ import time
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import COMMAND_COOLDOWN, DOMAIN
+from .const import COMMAND_COOLDOWN, DOMAIN, PANEL_URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,6 +22,7 @@ class EvEntity(CoordinatorEntity):
             name="dé EV Charger",
             manufacturer="dé",
             model="EV Charger gd version",
+            configuration_url=f"homeassistant://{PANEL_URL}",  # ссылка на панель «Зарядка»
         )
         self._last_command = float("-inf")
 

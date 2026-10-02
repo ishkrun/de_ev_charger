@@ -2,6 +2,7 @@
 import json
 
 DOMAIN = "de_ev_charger"
+PANEL_URL = "ev-charger"  # панель «Зарядка»: /ev-charger
 
 CONF_ACCESS_ID = "access_id"
 CONF_ACCESS_SECRET = "access_secret"

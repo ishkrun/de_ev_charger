@@ -20,7 +20,11 @@
 - `entity.py` — `EvEntity`, `cooldown_passed()`: не больше 1 команды за `COMMAND_COOLDOWN`=5 с
   (Charge now, Schedule, NFC — перенесено из Node-RED).
 - Платформы: sensor, switch, number, button, time.
-- `dashboards/ev_charger_card.yaml` — карточка (custom:button-card), без input_button/Node-RED.
+- `panel.py` + `frontend/de-ev-charger-card.js` — встроенная карточка `custom:de-ev-charger-card` (vanilla JS, без button-card)
+  и панель «Зарядка» (`/ev-charger`, panel_custom); JS раздаётся static path `/de_ev_charger_static/...?v=<version>`
+  и подключается во все дашборды через `frontend.add_extra_js_url`. Device info → `configuration_url=homeassistant://ev-charger`.
+  Внешний вид и вызовы — по карточке ChatGPT (`local/card.yaml`). Тест: мок-hass страница в scratchpad, ha-card/ha-icon — заглушки.
+- `dashboards/ev_charger_card.yaml` — та же карточка на custom:button-card (альтернатива).
 - `local/` — в .gitignore: выгрузки пользователя (flows Node-RED, дашборд), не коммитить.
 
 ## Сущности
