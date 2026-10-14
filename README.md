@@ -25,7 +25,7 @@
 ### Сущности
 | Сущность | DP |
 |---|---|
-| кнопка *Зарядить сейчас* | `x_charge_mode` m=0 |
+| кнопка *Зарядить сейчас* | `x_charge_mode` m=2, через 1 с m=0 |
 | переключатель *Расписание* | `x_charge_mode` m=2 / m=0 |
 | время *Начало / Окончание расписания* | `x_charge_mode` ss / se |
 | число *Ток зарядки* (6–32 A) | `x_charge_current` |
@@ -46,7 +46,7 @@
 - **Свой дашборд**: ✎ → *Добавить карточку* → **dé EV Charger** (или вручную `type: custom:de-ev-charger-card`).
 
 Кнопки карточки:
-- **Включить зарядку** → *Зарядить сейчас* (расписание выключается, зарядка стартует);
+- **Включить зарядку** → *Зарядить сейчас*: сначала включает расписание, через 1 с выключает его — зарядка стартует (одна команда «выключить расписание» сразу не срабатывает);
 - **По расписанию** → включает *Расписание* (вне окна расписания зарядка останавливается);
 - **NFC** → переключает *NFC*;
 - **Ток зарядки** → ползунок; **Начало / Окончание** → окно изменения времени.
@@ -87,7 +87,7 @@ A cloud project on [iot.tuya.com](https://iot.tuya.com) with the app account lin
 ### Entities
 | Entity | DP |
 |---|---|
-| button *Charge now* | `x_charge_mode` m=0 |
+| button *Charge now* | `x_charge_mode` m=2, then m=0 after 1 s |
 | switch *Schedule* | `x_charge_mode` m=2 / m=0 |
 | time *Schedule start / end* | `x_charge_mode` ss / se |
 | number *Charge current* (6–32 A) | `x_charge_current` |
@@ -108,7 +108,7 @@ The card is built into the integration and loads automatically after installing/
 - **Your dashboard**: ✎ → *Add card* → **dé EV Charger** (or manually `type: custom:de-ev-charger-card`).
 
 Card buttons:
-- **Start charging** → *Charge now* (the schedule is turned off, charging starts);
+- **Start charging** → *Charge now*: turns the schedule on first, then off after 1 s — charging starts (a single "schedule off" command does not work right away);
 - **By schedule** → turns *Schedule* on (outside the schedule window charging stops);
 - **NFC** → toggles *NFC*;
 - **Charge current** → slider; **Start / End** → time edit dialog.
@@ -149,7 +149,7 @@ Un proyecto en la nube en [iot.tuya.com](https://iot.tuya.com) con la cuenta de 
 ### Entidades
 | Entidad | DP |
 |---|---|
-| botón *Cargar ahora* | `x_charge_mode` m=0 |
+| botón *Cargar ahora* | `x_charge_mode` m=2, y tras 1 s m=0 |
 | interruptor *Horario* | `x_charge_mode` m=2 / m=0 |
 | hora *Inicio / Fin del horario* | `x_charge_mode` ss / se |
 | número *Corriente de carga* (6–32 A) | `x_charge_current` |
@@ -170,7 +170,7 @@ La tarjeta está integrada y se carga automáticamente tras instalar/actualizar 
 - **Tu panel**: ✎ → *Añadir tarjeta* → **dé EV Charger** (o manualmente `type: custom:de-ev-charger-card`).
 
 Botones de la tarjeta:
-- **Iniciar carga** → *Cargar ahora* (se desactiva el horario y empieza la carga);
+- **Iniciar carga** → *Cargar ahora*: primero activa el horario y tras 1 s lo desactiva — empieza la carga (un solo comando «desactivar horario» no funciona al momento);
 - **Según horario** → activa *Horario* (fuera de la ventana del horario la carga se detiene);
 - **NFC** → alterna *NFC*;
 - **Corriente de carga** → control deslizante; **Inicio / Fin** → diálogo para cambiar la hora.

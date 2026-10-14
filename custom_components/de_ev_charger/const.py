@@ -20,6 +20,9 @@ REFRESH_DELAYS = (3, 10)
 # Не чаще 1 команды за столько секунд от одной кнопки/переключателя
 # At most 1 command per this many seconds from one button/switch
 COMMAND_COOLDOWN = 5
+# «Зарядить сейчас»: пауза между m=2 и m=0, с (одна команда m=0 сразу не срабатывает)
+# "Charge now": pause between m=2 and m=0, s (a single m=0 does not start charging right away)
+CHARGE_NOW_DELAY = 1
 
 REGIONS = {
     "eu": "https://openapi.tuyaeu.com",

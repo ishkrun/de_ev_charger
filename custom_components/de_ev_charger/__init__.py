@@ -94,6 +94,9 @@ class EvCoordinator(DataUpdateCoordinator):
         self.charge_mode = mode
         await self._store.async_save(mode)
         self.async_update_listeners()
+        # Статус зарядки меняется после команды - доп. опросы, как в async_send
+        # Charger status changes after the command - extra polls, as in async_send
+        self.schedule_delayed_refresh()
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

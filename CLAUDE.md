@@ -26,7 +26,7 @@
 - `api.py` — свой клиент Tuya OpenAPI (HMAC-SHA256, токен `/v1.0/token?grant_type=1`, авто-рефреш при 1010/1011).
   Статус: `GET /v1.0/iot-03/devices/{id}/status`, команды: `POST /v1.0/iot-03/devices/{id}/commands`.
 - `__init__.py` — `EvCoordinator` (DataUpdateCoordinator): опрос `SCAN_INTERVAL`=30 с;
-  после команды доп. опросы по `REFRESH_DELAYS`=(3, 10) с от команды через `async_refresh()` (без debounce);
+  после любой команды (`async_send`, `async_set_charge_mode`) доп. опросы по `REFRESH_DELAYS`=(3, 10) с через `async_refresh()` (без debounce);
   `charge_mode` хранится локально в `Store`, т.к. облако не отдаёт `x_charge_mode`.
 - `const.py` — константы, `parse_json`, `flatten`, коды статуса, уровни CP, масштаб метрик.
 - `entity.py` — `EvEntity`, `cooldown_passed()`: не больше 1 команды за `COMMAND_COOLDOWN`=5 с
@@ -47,7 +47,7 @@
 ### Сущности
 | Entity | DP |
 |---|---|
-| button `Charge now` | `x_charge_mode` m=0 |
+| button `Charge now` | `x_charge_mode` m=2 → 1 с → m=0 |
 | switch `Schedule` | `x_charge_mode` m=2 / m=0 |
 | time `Schedule start/end` | `x_charge_mode` ss / se |
 | number `Charge current` 6–32 A | `x_charge_current` |
@@ -65,6 +65,7 @@
 ### Форматы DP
 - `x_charge_mode` (String): `{"m":2,"dt":0,"ss":"00:00","se":"10:00"}`
   - m=0 — расписание выкл / заряжать сразу; m=2 — по расписанию; m=1 предположительно отложенный старт (`dt`), не проверено.
+  - Одна команда m=0 зарядку сразу не запускает (подтверждено пользователем) → Charge now шлёт m=2, через `CHARGE_NOW_DELAY`=1 с m=0.
   - Отправлять компактным JSON (`separators=(",", ":")`).
 - `x_charge_history` (String, только в логах, в status нет): `{"t":"2026-10-01 15:53:00","s":"15:53","e":"18:32","d":9580,"c":60}`
   - t — начало, s/e — HH:MM, d — длительность в секундах (подтверждено), c — предположительно энергия ×0.1 кВт·ч (не сверено).
@@ -122,7 +123,7 @@ Answer briefly, in Russian. Give code in full, not in fragments.
 - `api.py` — own Tuya OpenAPI client (HMAC-SHA256, token `/v1.0/token?grant_type=1`, auto refresh on 1010/1011).
   Status: `GET /v1.0/iot-03/devices/{id}/status`, commands: `POST /v1.0/iot-03/devices/{id}/commands`.
 - `__init__.py` — `EvCoordinator` (DataUpdateCoordinator): polling every `SCAN_INTERVAL`=30 s;
-  after a command extra polls at `REFRESH_DELAYS`=(3, 10) s via `async_refresh()` (no debounce);
+  after any command (`async_send`, `async_set_charge_mode`) extra polls at `REFRESH_DELAYS`=(3, 10) s via `async_refresh()` (no debounce);
   `charge_mode` is stored locally in `Store` because the cloud does not return `x_charge_mode`.
 - `const.py` — constants, `parse_json`, `flatten`, status codes, CP levels, metrics scale.
 - `entity.py` — `EvEntity`, `cooldown_passed()`: at most 1 command per `COMMAND_COOLDOWN`=5 s
@@ -147,6 +148,7 @@ See the table in the Russian section (entity / DP mapping is identical).
 ### DP formats
 - `x_charge_mode` (String): `{"m":2,"dt":0,"ss":"00:00","se":"10:00"}`
   - m=0 — schedule off / charge now; m=2 — by schedule; m=1 presumably delayed start (`dt`), untested.
+  - A single m=0 command does not start charging right away (confirmed by the user) → Charge now sends m=2, then m=0 after `CHARGE_NOW_DELAY`=1 s.
   - Send as compact JSON (`separators=(",", ":")`).
 - `x_charge_history` (String, logs only, not in status): `{"t":"2026-10-01 15:53:00","s":"15:53","e":"18:32","d":9580,"c":60}`
   - t — start, s/e — HH:MM, d — duration in seconds (confirmed), c — presumably energy ×0.1 kWh (not verified).
@@ -204,7 +206,7 @@ Responde de forma breve, en ruso. Entrega el código completo, no a trozos.
 - `api.py` — cliente propio de Tuya OpenAPI (HMAC-SHA256, token `/v1.0/token?grant_type=1`, renovación automática con 1010/1011).
   Estado: `GET /v1.0/iot-03/devices/{id}/status`, comandos: `POST /v1.0/iot-03/devices/{id}/commands`.
 - `__init__.py` — `EvCoordinator` (DataUpdateCoordinator): sondeo cada `SCAN_INTERVAL`=30 s;
-  tras un comando, sondeos extra a `REFRESH_DELAYS`=(3, 10) s mediante `async_refresh()` (sin debounce);
+  tras cualquier comando (`async_send`, `async_set_charge_mode`), sondeos extra a `REFRESH_DELAYS`=(3, 10) s mediante `async_refresh()` (sin debounce);
   `charge_mode` se guarda localmente en `Store` porque la nube no devuelve `x_charge_mode`.
 - `const.py` — constantes, `parse_json`, `flatten`, códigos de estado, niveles de CP, escala de métricas.
 - `entity.py` — `EvEntity`, `cooldown_passed()`: como máximo 1 comando cada `COMMAND_COOLDOWN`=5 s
@@ -229,6 +231,7 @@ Ver la tabla de la sección en ruso (la correspondencia entidad / DP es idéntic
 ### Formatos de DP
 - `x_charge_mode` (String): `{"m":2,"dt":0,"ss":"00:00","se":"10:00"}`
   - m=0 — horario desactivado / cargar ahora; m=2 — según horario; m=1 probablemente inicio diferido (`dt`), sin probar.
+  - Un solo comando m=0 no inicia la carga al momento (confirmado por el usuario) → Charge now envía m=2 y, tras `CHARGE_NOW_DELAY`=1 s, m=0.
   - Enviar como JSON compacto (`separators=(",", ":")`).
 - `x_charge_history` (String, solo en registros, no en status): `{"t":"2026-10-01 15:53:00","s":"15:53","e":"18:32","d":9580,"c":60}`
   - t — inicio, s/e — HH:MM, d — duración en segundos (confirmado), c — probablemente energía ×0.1 kWh (sin verificar).
